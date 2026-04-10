@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+  <meta name="theme-color" content="#059669">
+  <meta name="description" content="Simulador de CDB definitivo com cálculos precisos de IR regressivo e IOF. PWA pronto para instalar no celular!">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CDB Pro Ultra">
+  <link rel="manifest" href="data:application/manifest+json,{
+    \"name\": \"CDB Pro Ultra\",
+    \"short_name\": \"CDB Pro\",
+    \"description\": \"Simulador de CDB com IR e IOF corrigidos\",
+    \"start_url\": \".\",
+    \"display\": \"standalone\",
+    \"theme_color\": \"#059669\",
+    \"background_color\": \"#030712\",
+    \"icons\": [{
+      \"src\": \"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23059669'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-weight='bold'%3ECD%3C/text%3E%3C/svg%3E\",
+      \"sizes\": \"any\",
+      \"type\": \"image/svg+xml\",
+      \"purpose\": \"any maskable\"
+    }]
+  }">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23059669'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-weight='bold'%3ECD%3C/text%3E%3C/svg%3E">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23059669'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-weight='bold'%3ECD%3C/text%3E%3C/svg%3E">
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/imask"></script>
+  <style>
+    * { -webkit-tap-highlight-color: transparent; transition: background-color 0.3s, border-color 0.3s, color 0.2s; }
+    body.dark { background: radial-gradient(circle at 10% 20%, #0a0f1c, #030712); color: #f1f5f9; }
+    body.light { background: linear-gradient(135deg, #f0fdf4, #dcfce7); color: #0f172a; }
+    body.light .glass-premium { background: rgba(255,255,255,0.92); backdrop-filter: blur(14px); border-color: rgba(16,185,129,0.3); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1); }
+    body.light .input-ultra { background: #ffffff; border-color: #cbd5e1; color: #0f172a; }
+    body.light .input-ultra:focus { border-color: #10b981; }
+    body.light .bg-gray-800, body.light .bg-gray-900 { background-color: #f1f5f9; }
+    body.light .card-info { background: #ffffff; border: 1px solid #e2e8f0; }
+    body.light .text-gray-300 { color: #475569; }
+    body.light .text-gray-400 { color: #64748b; }
+    .glass-premium { background: rgba(15, 25, 35, 0.7); backdrop-filter: blur(14px); border: 1px solid rgba(74, 222, 128, 0.2); transition: all 0.3s; }
+    .input-ultra { background: #0f172ad9; border: 1px solid #334155; transition: all 0.2s; border-radius: 0.75rem; padding: 0.75rem; width: 100%; font-size: 0.875rem; color: white; }
+    .input-ultra:focus { border-color: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,0.2); outline: none; }
+    body.light .input-ultra { color: #0f172a; }
+    .btn-foda { background: linear-gradient(105deg, #059669, #10b981, #34d399); background-size: 200% auto; transition: all 0.3s; }
+    .btn-foda:hover { background-position: right center; transform: scale(1.02); }
+    .tab-active { background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(5,150,105,0.1)); border-bottom: 2px solid #10b981; color: #4ade80; }
+    .range-slider { -webkit-appearance: none; background: #1e293b; height: 4px; border-radius: 5px; }
+    .range-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #10b981; cursor: pointer; }
+    body.light .range-slider { background: #cbd5e1; }
+    canvas { max-height: 280px; width: 100% !important; }
+    .tabela-evolucao { max-height: 400px; overflow-y: auto; font-size: 0.75rem; }
+    .tabela-evolucao table { width: 100%; border-collapse: collapse; }
+    .tabela-evolucao th, .tabela-evolucao td { padding: 8px; text-align: right; border-bottom: 1px solid rgba(128,128,128,0.2); }
+    .tabela-evolucao th:first-child, .tabela-evolucao td:first-child { text-align: left; }
+    .card-info { background: rgba(255,255,255,0.05); border-radius: 1rem; padding: 1rem; border: 1px solid rgba(74,222,128,0.15); transition: all 0.3s; }
+    body.light .card-info { background: #ffffff; border: 1px solid #e2e8f0; }
+    .card-info:hover { transform: translateY(-3px); border-color: rgba(16,185,129,0.4); }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: #1f2937; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 10px; }
+    body.light ::-webkit-scrollbar-track { background: #e2e8f0; }
+    @media print { .no-print { display: none; } }
+    @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-5px); } }
+    .animate-fade-in-up { animation: fadeInUp 0.5s ease-out; }
+    .animate-float { animation: float 3s ease-in-out infinite; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body class="dark transition-colors duration-300">
+  <div class="relative overflow-hidden">
+    <div class="absolute top-0 -left-40 w-96 h-96 bg-emerald-500/30 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="absolute bottom-0 right-0 w-80 h-80 bg-blue-600/20 rounded-full blur-[90px] pointer-events-none"></div>
+    
+    <!-- Header -->
+    <div class="sticky top-0 z-30 bg-gray-900/70 backdrop-blur-xl border-b border-emerald-500/20 shadow-2xl no-print">
+      <div class="max-w-7xl mx-auto px-4 py-2 md:py-3">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="flex items-center gap-2">
+            <div class="bg-gradient-to-br from-emerald-400 to-green-600 p-1.5 md:p-2 rounded-xl shadow-lg animate-float"><i class="fas fa-chart-line text-white text-base md:text-xl"></i></div>
+            <div><h1 class="font-black text-lg md:text-2xl bg-gradient-to-r from-emerald-300 via-green-400 to-emerald-300 bg-clip-text text-transparent">CDB<span class="text-white"> PRO ULTRA</span></h1><p class="text-[8px] md:text-[10px] text-gray-400">simulador definitivo • informações corrigidas</p></div>
+          </div>
+          <div class="flex gap-1 items-center">
+            <button onclick="toggleTheme()" class="bg-gray-700/50 p-1.5 md:p-2 rounded-full text-xs hover:bg-gray-600 transition"><i id="themeIcon" class="fas fa-sun text-sm md:text-base"></i></button>
+            <button onclick="instalarPWA()" id="installBtn" class="bg-emerald-600/50 p-1.5 md:p-2 rounded-full text-xs hover:bg-emerald-500 transition ml-1 hidden"><i class="fas fa-download text-sm md:text-base"></i></button>
+            <div class="flex gap-0.5 md:gap-1 bg-black/40 p-0.5 md:p-1 rounded-full">
+              <button onclick="trocarAba('inicio')" id="btn-inicio" class="tab-button px-2 md:px-4 py-1 md:py-2 rounded-full text-[10px] md:text-sm font-bold transition-all"><i class="fas fa-home"></i><span class="hidden xs:inline ml-1">Início</span></button>
+              <button onclick="trocarAba('simulador')" id="btn-simulador" class="tab-button px-2 md:px-4 py-1 md:py-2 rounded-full text-[10px] md:text-sm font-bold transition-all"><i class="fas fa-chart-line"></i><span class="hidden xs:inline ml-1">Simular</span></button>
+              <button onclick="trocarAba('comparador')" id="btn-comparador" class="tab-button px-2 md:px-4 py-1 md:py-2 rounded-full text-[10px] md:text-sm font-bold transition-all"><i class="fas fa-chart-simple"></i><span class="hidden xs:inline ml-1">Comparar</span></button>
+              <button onclick="trocarAba('meta')" id="btn-meta" class="tab-button px-2 md:px-4 py-1 md:py-2 rounded-full text-[10px] md:text-sm font-bold transition-all"><i class="fas fa-bullseye"></i><span class="hidden xs:inline ml-1">Meta</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-4 md:py-6">
+      
+      <!-- INÍCIO -->
+      <div id="inicio" class="tab-content animate-fade-in-up">
+        <div class="glass-premium rounded-2xl md:rounded-3xl p-5 md:p-8 shadow-2xl mb-6">
+          <div class="flex flex-col lg:flex-row justify-between gap-6">
+            <div class="flex-1">
+              <div class="inline-flex gap-2 bg-emerald-500/20 px-3 py-1 rounded-full text-emerald-300 text-[10px] md:text-xs font-bold mb-3">
+                <i class="fas fa-mobile-alt"></i> PWA • INSTALÁVEL NO CELULAR
+              </div>
+              <h2 class="text-2xl md:text-4xl lg:text-5xl font-black leading-tight mb-3">
+                Simulador de <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-green-300">CDB</span><br>preciso e offline
+              </h2>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4">
+                <div class="flex items-center gap-2 text-emerald-400 text-sm"><i class="fas fa-check-circle"></i> IR Regressivo corrigido (22,5% → 15%)</div>
+                <div class="flex items-center gap-2 text-emerald-400 text-sm"><i class="fas fa-check-circle"></i> IOF decrescente dia a dia (96% → 0% em 30 dias)</div>
+                <div class="flex items-center gap-2 text-emerald-400 text-sm"><i class="fas fa-check-circle"></i> Gráfico • Tabela mensal • PDF • Comparação • Meta reversa</div>
+                <div class="flex items-center gap-2 text-emerald-400 text-sm"><i class="fas fa-check-circle"></i> Funciona offline • Instale na tela inicial do seu celular</div>
+              </div>
+              <div class="flex flex-wrap gap-3 mt-6">
+                <button onclick="trocarAba('simulador')" class="btn-foda px-5 md:px-8 py-2 md:py-3 rounded-xl font-bold text-white text-sm md:text-base flex items-center gap-2 shadow-lg">
+                  <i class="fas fa-rocket"></i> SIMULAR
+                </button>
+                <button onclick="carregarExemploIniciante()" class="bg-gray-700/50 hover:bg-gray-600 px-4 md:px-6 py-2 md:py-3 rounded-xl font-medium text-sm md:text-base transition flex items-center gap-2">
+                  <i class="fas fa-graduation-cap"></i> Exemplo Prático
+                </button>
+              </div>
+            </div>
+            <div class="hidden lg:flex items-center justify-center">
+              <div class="text-center">
+                <i class="fas fa-chart-line text-6xl text-emerald-500/40"></i>
+                <p class="text-xs text-gray-400 mt-2">simulação precisa</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TABELAS DE IMPOSTOS CORRETAS -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+          <div class="card-info">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="bg-red-500/20 p-2 rounded-lg"><i class="fas fa-file-invoice-dollar text-red-400 text-lg"></i></div>
+              <h3 class="text-base md:text-lg font-bold">📊 IR Regressivo (correto)</h3>
+            </div>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between p-2 bg-red-500/10 rounded-lg"><span>📆 Até 180 dias</span><span class="font-bold text-red-400">22,5%</span></div>
+              <div class="flex justify-between p-2 bg-orange-500/10 rounded-lg"><span>📆 De 181 a 360 dias</span><span class="font-bold text-orange-400">20,0%</span></div>
+              <div class="flex justify-between p-2 bg-yellow-500/10 rounded-lg"><span>📆 De 361 a 720 dias</span><span class="font-bold text-yellow-400">17,5%</span></div>
+              <div class="flex justify-between p-2 bg-green-500/10 rounded-lg"><span>📆 Acima de 720 dias</span><span class="font-bold text-green-400">15,0%</span></div>
+            </div>
+            <p class="text-xs text-gray-400 mt-3"><i class="fas fa-lightbulb text-yellow-400"></i> Quanto mais tempo, menos imposto! O ideal é investir por + de 720 dias (2 anos).</p>
+          </div>
+          <div class="card-info">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="bg-blue-500/20 p-2 rounded-lg"><i class="fas fa-clock text-blue-400 text-lg"></i></div>
+              <h3 class="text-base md:text-lg font-bold">⏱️ IOF Decrescente (correto)</h3>
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-center mb-3">
+              <div class="bg-blue-500/10 p-2 rounded-lg"><span class="text-blue-300 text-xs">Dia 1</span><br><span class="font-bold text-lg">96%</span></div>
+              <div class="bg-blue-500/10 p-2 rounded-lg"><span class="text-blue-300 text-xs">Dia 15</span><br><span class="font-bold text-lg">50%</span></div>
+              <div class="bg-green-500/10 p-2 rounded-lg"><span class="text-green-300 text-xs">Dia 30+</span><br><span class="font-bold text-lg">0%</span></div>
+            </div>
+            <p class="text-xs text-gray-400"><i class="fas fa-lightbulb text-yellow-400"></i> Dica: evite resgatar nos primeiros 30 dias — o IOF pode comer até 96% do seu lucro!</p>
+          </div>
+        </div>
+
+        <div id="installBanner" class="glass-premium rounded-xl p-3 flex items-center justify-between gap-2 mt-4 hidden">
+          <div class="flex items-center gap-2"><i class="fas fa-download text-emerald-400 text-xl"></i><span class="text-sm">Instale o app na tela inicial</span></div>
+          <button onclick="instalarPWA()" class="bg-emerald-600 px-4 py-1 rounded-lg text-sm font-bold">Instalar</button>
+        </div>
+      </div>
+
+      <!-- SIMULADOR -->
+      <div id="simulador" class="tab-content hidden animate-fade-in-up">
+        <div class="glass-premium rounded-2xl md:rounded-3xl p-4 md:p-8">
+          <div class="flex flex-wrap justify-between items-center gap-2 border-b border-gray-700 pb-4 mb-5">
+            <div class="flex items-center gap-2"><div class="bg-gradient-to-br from-emerald-500 to-green-600 p-2 rounded-xl"><i class="fas fa-chart-line text-white text-base md:text-xl"></i></div><h2 class="text-lg md:text-2xl font-black">Simulador Profissional</h2></div>
+            <div class="flex gap-1">
+              <button onclick="carregarExemploIniciante()" class="bg-blue-600/70 px-2 md:px-3 py-1 rounded-lg text-[10px] md:text-xs font-bold"><i class="fas fa-seedling"></i> Iniciante</button>
+              <button onclick="carregarExemploAposentadoria()" class="bg-purple-600/70 px-2 md:px-3 py-1 rounded-lg text-[10px] md:text-xs font-bold"><i class="fas fa-tree"></i> Aposentadoria</button>
+              <button onclick="gerarPDF()" class="bg-red-600/80 px-2 md:px-3 py-1 rounded-lg text-[10px] md:text-xs font-bold"><i class="fas fa-file-pdf"></i> PDF</button>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <div class="space-y-3">
+              <div><label class="block font-semibold text-sm"><i class="fas fa-dollar-sign text-emerald-400"></i> Valor inicial</label><input type="text" id="valorInicialMask" class="input-ultra" placeholder="R$ 1.000"></div>
+              <div><label class="block font-semibold text-sm"><i class="fas fa-calendar-plus text-emerald-400"></i> Aporte mensal</label><input type="text" id="aporteMensalMask" class="input-ultra" placeholder="R$ 200"></div>
+              <div><label class="block font-semibold text-sm"><i class="fas fa-building-columns"></i> Tipo de CDB</label><select id="tipoCDB" class="input-ultra"><option value="pos">📈 CDB Pós-fixado (100% CDI) - 1% a.m.</option><option value="pre">📊 CDB Prefixado (12% a.a.) - 0.95% a.m.</option><option value="ipca">🛡️ CDB IPCA+ (IPCA+5%) - 0.85% a.m.</option></select></div>
+              <div class="grid grid-cols-2 gap-3"><div><label class="text-sm">Unidade</label><select id="tipoTempo" class="input-ultra"><option value="meses">📆 Meses</option><option value="dias">⏳ Dias</option></select></div><div><label class="text-sm">Período</label><input type="range" id="tempoSlider" min="1" max="120" value="24" class="range-slider w-full"><input type="number" id="tempo" value="24" class="input-ultra w-full mt-1 text-center"></div></div>
+            </div>
+            <div class="space-y-2">
+              <div class="bg-gray-800/40 p-3 rounded-xl text-center"><p class="text-gray-400 text-[10px]">VALOR LÍQUIDO FINAL</p><p id="resumoLiquido" class="text-xl md:text-3xl font-black text-emerald-400">R$ 0</p></div>
+              <div class="grid grid-cols-2 gap-2">
+                <div class="bg-gray-800/40 p-2 rounded-xl"><p class="text-[10px] text-gray-400">Bruto</p><p id="resumoBruto" class="text-sm font-bold">R$ 0</p></div>
+                <div class="bg-gray-800/40 p-2 rounded-xl"><p class="text-[10px] text-gray-400">Lucro Líquido</p><p id="resumoLucro" class="text-sm font-bold text-green-300">R$ 0</p></div>
+                <div class="bg-gray-800/40 p-2 rounded-xl"><p class="text-[10px] text-gray-400">ROI</p><p id="roiPercentual" class="text-sm font-bold text-blue-300">0%</p></div>
+                <div class="bg-gray-800/40 p-2 rounded-xl"><p class="text-[10px] text-gray-400">Previsão</p><p id="dataResgate" class="text-xs font-bold text-purple-300">-</p></div>
+              </div>
+              <div class="bg-emerald-900/30 p-2 rounded-lg text-center text-[10px]"><span id="taxaInfo">IR: 22,5% | IOF: isento após 30d</span></div>
+            </div>
+          </div>
+          
+          <div class="mt-5"><canvas id="evolutionChart" width="400" height="200"></canvas></div>
+          
+          <div class="mt-4">
+            <button onclick="toggleTabela()" class="w-full bg-gray-700/50 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-2"><i class="fas fa-table"></i> Ver tabela de evolução mês a mês <i id="tabelaIcon" class="fas fa-chevron-down text-xs"></i></button>
+            <div id="tabelaEvolucao" class="tabela-evolucao mt-2 hidden rounded-xl border border-gray-700 p-2"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMPARADOR -->
+      <div id="comparador" class="tab-content hidden animate-fade-in-up">
+        <div class="glass-premium rounded-2xl md:rounded-3xl p-5 md:p-7">
+          <h2 class="text-lg md:text-2xl font-black mb-4"><i class="fas fa-chart-simple text-blue-400"></i> CDB vs Poupança</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div><label class="text-sm">Valor inicial</label><input type="text" id="compValorMask" class="input-ultra text-sm" value="5000"></div>
+            <div><label class="text-sm">Aporte mensal</label><input type="text" id="compAporteMask" class="input-ultra text-sm" value="300"></div>
+            <div><label class="text-sm">Prazo (meses)</label><input type="range" id="compMesesSlider" min="1" max="120" value="36" class="range-slider w-full"><input type="number" id="compMeses" value="36" class="input-ultra w-full mt-1 text-sm"></div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+            <div class="bg-emerald-900/30 p-4 rounded-xl text-center"><i class="fas fa-chart-line text-emerald-400 text-xl"></i><p class="font-bold mt-1">CDB (1% a.m.)</p><p id="compCdbValor" class="text-xl md:text-2xl font-black text-emerald-300">R$ 0</p><p id="compCdbLucro" class="text-xs">Lucro líquido</p></div>
+            <div class="bg-yellow-900/30 p-4 rounded-xl text-center"><i class="fas fa-piggy-bank text-yellow-400 text-xl"></i><p class="font-bold mt-1">Poupança (0,5% a.m.)</p><p id="compPoupValor" class="text-xl md:text-2xl font-black text-yellow-300">R$ 0</p><p id="compPoupLucro" class="text-xs">Lucro (isento IR)</p></div>
+          </div>
+          <div id="comparacaoDiferenca" class="mt-3 text-center text-sm font-bold text-emerald-400"></div>
+        </div>
+      </div>
+
+      <!-- META -->
+      <div id="meta" class="tab-content hidden animate-fade-in-up">
+        <div class="glass-premium rounded-2xl md:rounded-3xl p-5 md:p-7">
+          <h2 class="text-lg md:text-2xl font-black mb-4"><i class="fas fa-bullseye text-amber-400"></i> Meta Financeira Reversa</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div><label class="text-sm">Valor desejado</label><input type="text" id="metaObjetivoMask" class="input-ultra text-sm" value="100000"></div>
+            <div><label class="text-sm">Valor inicial</label><input type="text" id="metaInicialMask" class="input-ultra text-sm" value="5000"></div>
+            <div><label class="text-sm">Prazo (meses)</label><input type="range" id="metaMesesSlider" min="1" max="120" value="60" class="range-slider w-full"><input type="number" id="metaMeses" value="60" class="input-ultra w-full mt-1 text-sm"></div>
+            <div class="flex items-end"><button onclick="calcularMeta()" class="btn-foda w-full py-2 rounded-xl font-bold text-sm"><i class="fas fa-calculator"></i> Calcular aporte</button></div>
+          </div>
+          <div id="resultadoMeta" class="mt-5 bg-gradient-to-r from-emerald-900/30 p-4 rounded-xl text-center"><p class="text-gray-300 text-sm">📊 Aporte mensal necessário:</p><p id="metaAporteResultado" class="text-2xl md:text-3xl font-black text-emerald-400 mt-1">R$ 0</p><p id="metaDetalhe" class="text-xs text-gray-400 mt-1"></p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="text-center text-gray-500 text-[9px] md:text-xs py-4 border-t border-gray-800/40 no-print"><i class="fas fa-chart-line"></i> CDB Pro Ultra • IR Regressivo (22,5%→15%) • IOF decrescente (96%→0% em 30 dias) • Dados corrigidos e verificados</footer>
+
+  <script>
+    let chartInstance = null, tabelaVisivel = false, deferredPrompt = null;
+    function formatMoney(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+    function parseMoney(val) { let v = String(val).replace(/[^0-9,]/g, '').replace(',', '.'); return parseFloat(v) || 0; }
+    function getTaxaMensal(tipo) { if (tipo === 'pre') return 0.0095; if (tipo === 'ipca') return 0.0085; return 0.01; }
+    function calcularIOF(dias, lucro) { if (dias >= 30 || lucro <= 0) return 0; const t=[0.96,0.93,0.90,0.86,0.83,0.80,0.76,0.73,0.70,0.66,0.63,0.60,0.56,0.53,0.50,0.46,0.43,0.40,0.36,0.33,0.30,0.26,0.23,0.20,0.16,0.13,0.10,0.06,0.03,0]; let idx=dias-1; return idx>=t.length?0:lucro*t[idx]; }
+    function calcularCDBCompleto(valInic, aporte, tempo, tipo, tipoUnidade, retornaHistorico = false) {
+      let taxa = getTaxaMensal(tipo); let total = valInic, investido = valInic, dias = 0, historico = [];
+      if (tipoUnidade === "meses") { let saldo = valInic; for (let i = 0; i < tempo; i++) { if (i > 0) saldo += aporte; saldo = saldo * (1 + taxa); if (retornaHistorico) historico.push({ mes: i+1, bruto: saldo, investido: valInic + (aporte * (i+1)) }); } total = saldo; investido = valInic + (aporte * tempo); dias = tempo * 30; }
+      else { let saldo = valInic; for (let i = 1; i <= tempo; i++) { saldo = saldo * (1 + taxa/30); if (retornaHistorico) historico.push({ mes: i, bruto: saldo, investido: valInic }); } total = saldo; investido = valInic; dias = tempo; }
+      let lucro = Math.max(0, total - investido); let aliquotaIR = dias <= 180 ? 0.225 : (dias <= 360 ? 0.2 : (dias <= 720 ? 0.175 : 0.15)); let valorIR = lucro * aliquotaIR; let iof = calcularIOF(dias, lucro); let liquido = total - valorIR - iof; let roi = ((liquido - investido) / investido) * 100; let dataResgate = new Date(); dataResgate.setMonth(dataResgate.getMonth() + (tipoUnidade === 'meses' ? tempo : Math.floor(tempo/30))); return { total, investido, lucro, valorIR, iof, liquido, dias, aliquotaIR, historico, taxa, roi, dataResgate: dataResgate.toLocaleDateString('pt-BR') };
+    }
+    function atualizarSimulador() {
+      let valInic = parseMoney(document.getElementById('valorInicialMask').value), aporte = parseMoney(document.getElementById('aporteMensalMask').value), tempo = parseInt(document.getElementById('tempo').value), tipoUnidade = document.getElementById('tipoTempo').value, tipoCDB = document.getElementById('tipoCDB').value;
+      if (isNaN(tempo) || tempo <= 0) tempo = 1;
+      let res = calcularCDBCompleto(valInic, aporte, tempo, tipoCDB, tipoUnidade, true);
+      document.getElementById('resumoLiquido').innerHTML = formatMoney(res.liquido); document.getElementById('resumoBruto').innerHTML = formatMoney(res.total); document.getElementById('resumoLucro').innerHTML = formatMoney(res.liquido - res.investido); document.getElementById('roiPercentual').innerHTML = `${res.roi.toFixed(2)}%`; document.getElementById('dataResgate').innerHTML = res.dataResgate;
+      let faixaIR = res.dias <= 180 ? "22,5%" : (res.dias <= 360 ? "20%" : (res.dias <= 720 ? "17,5%" : "15%")); document.getElementById('taxaInfo').innerHTML = `IR: ${faixaIR} | IOF: ${res.dias>=30?'isento':res.dias+' dias'}`;
+      let labels = [], dadosBrutos = [], dadosLiquidos = [];
+      for (let i = 0; i < Math.min(res.historico.length, 60); i++) { let h = res.historico[i]; let lucroH = h.bruto - h.investido; let irH = lucroH * res.aliquotaIR; let iofH = calcularIOF(Math.min(res.dias, (tipoUnidade === 'meses' ? (i+1)*30 : i+1)), lucroH); labels.push(tipoUnidade === 'meses' ? `${h.mes}m` : `${h.mes}d`); dadosBrutos.push(h.bruto); dadosLiquidos.push(h.bruto - irH - iofH); }
+      if (chartInstance) chartInstance.destroy(); const ctx = document.getElementById('evolutionChart').getContext('2d');
+      chartInstance = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ label: 'Bruto', data: dadosBrutos, borderColor: '#f59e0b', tension: 0.3 }, { label: 'Líquido', data: dadosLiquidos, borderColor: '#10b981', borderWidth: 3, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: document.body.classList.contains('light') ? '#0f172a' : '#ccc', font: { size: 10 } } } } } });
+      let html = '<table><thead><tr><th>Mês</th><th>Bruto</th><th>Investido</th><th>Rendimento</th><th>IR</th><th>IOF</th><th>Líquido</th></tr></thead><tbody>';
+      for (let i = 0; i < Math.min(res.historico.length, 24); i++) { let h = res.historico[i]; let lucroH = h.bruto - h.investido; let irH = lucroH * res.aliquotaIR; let iofH = calcularIOF(Math.min(res.dias, (tipoUnidade === 'meses' ? (i+1)*30 : i+1)), lucroH); html += `<tr><td class="p-2">${tipoUnidade === 'meses' ? `${h.mes}º mês` : `${h.mes}º dia`}</td><td class="p-2">${formatMoney(h.bruto)}</td><td class="p-2">${formatMoney(h.investido)}</td><td class="p-2">${formatMoney(lucroH)}</td><td class="p-2">${formatMoney(irH)}</td><td class="p-2">${formatMoney(iofH)}</td><td class="p-2 text-green-300">${formatMoney(h.bruto - irH - iofH)}</td></tr>`; }
+      html += '</tbody></table>'; document.getElementById('tabelaEvolucao').innerHTML = html;
+    }
+    function toggleTabela() { tabelaVisivel = !tabelaVisivel; document.getElementById('tabelaEvolucao').classList.toggle('hidden', !tabelaVisivel); document.getElementById('tabelaIcon').classList.toggle('fa-chevron-up', tabelaVisivel); }
+    function carregarExemploIniciante() { trocarAba('simulador'); document.getElementById('valorInicialMask').value = 'R$ 1.000'; document.getElementById('aporteMensalMask').value = 'R$ 200'; document.getElementById('tempo').value = '24'; document.getElementById('tempoSlider').value = '24'; atualizarSimulador(); }
+    function carregarExemploAposentadoria() { trocarAba('simulador'); document.getElementById('valorInicialMask').value = 'R$ 10.000'; document.getElementById('aporteMensalMask').value = 'R$ 500'; document.getElementById('tempo').value = '120'; document.getElementById('tempoSlider').value = '120'; atualizarSimulador(); }
+    async function gerarPDF() { const { jsPDF } = window.jspdf; let valInic = parseMoney(document.getElementById('valorInicialMask').value); let aporte = parseMoney(document.getElementById('aporteMensalMask').value); let tempo = document.getElementById('tempo').value; let liquido = document.getElementById('resumoLiquido').innerText; const doc = new jsPDF('p', 'mm', 'a4'); doc.setFontSize(16); doc.text('Relatório CDB Pro Ultra', 20, 20); doc.setFontSize(10); doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 20, 30); doc.text(`Valor inicial: ${formatMoney(valInic)}`, 20, 40); doc.text(`Aporte mensal: ${formatMoney(aporte)}`, 20, 47); doc.text(`Período: ${tempo} ${document.getElementById('tipoTempo').value}`, 20, 54); doc.text(`Valor líquido: ${liquido}`, 20, 61); doc.text(`*IR regressivo (22,5%→15%) e IOF decrescente (96%→0% em 30 dias)`, 20, 75); doc.save(`relatorio_cdb_${new Date().toISOString().slice(0,10)}.pdf`); }
+    function atualizarComparacao() { let val = parseMoney(document.getElementById('compValorMask').value); let aporte = parseMoney(document.getElementById('compAporteMask').value); let meses = parseInt(document.getElementById('compMeses').value); let cdb = calcularCDBCompleto(val, aporte, meses, 'pos', 'meses'); let poup = (() => { let s = val; for (let i = 0; i < meses; i++) { if (i > 0) s += aporte; s *= 1.005; } return s; })(); document.getElementById('compCdbValor').innerHTML = formatMoney(cdb.liquido); document.getElementById('compCdbLucro').innerHTML = `Lucro: ${formatMoney(cdb.liquido - cdb.investido)}`; document.getElementById('compPoupValor').innerHTML = formatMoney(poup); document.getElementById('compPoupLucro').innerHTML = `Lucro: ${formatMoney(poup - (val + (aporte * meses)))}`; let diff = cdb.liquido - poup; document.getElementById('comparacaoDiferenca').innerHTML = diff > 0 ? `💰 CDB rende ${formatMoney(diff)} a mais!` : `📉 Poupança rende ${formatMoney(-diff)} a mais`; }
+    function calcularMeta() { let obj = parseMoney(document.getElementById('metaObjetivoMask').value); let ini = parseMoney(document.getElementById('metaInicialMask').value); let meses = parseInt(document.getElementById('metaMeses').value); if (obj <= ini) { document.getElementById('metaAporteResultado').innerHTML = "R$ 0"; document.getElementById('metaDetalhe').innerHTML = "Meta já atingida!"; return; } let low = 0, high = obj, aporteNecessario = 0; for (let iter = 0; iter < 50; iter++) { let mid = (low + high) / 2; let res = calcularCDBCompleto(ini, mid, meses, 'pos', 'meses'); if (res.liquido >= obj) { aporteNecessario = mid; high = mid; } else { low = mid; } } document.getElementById('metaAporteResultado').innerHTML = formatMoney(aporteNecessario); let resFinal = calcularCDBCompleto(ini, aporteNecessario, meses, 'pos', 'meses'); document.getElementById('metaDetalhe').innerHTML = `Com aporte de ${formatMoney(aporteNecessario)}/mês, atinge ${formatMoney(resFinal.liquido)} em ${meses} meses.`; }
+    function toggleTheme() { document.body.classList.toggle('light'); document.body.classList.toggle('dark'); let icon = document.getElementById('themeIcon'); icon.classList.toggle('fa-sun'); icon.classList.toggle('fa-moon'); if (chartInstance) chartInstance.options.plugins.legend.labels.color = document.body.classList.contains('light') ? '#0f172a' : '#ccc'; if (chartInstance) chartInstance.update(); }
+    function instalarPWA() { if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => { deferredPrompt = null; }); } }
+    function bindEvents() {
+      ['valorInicialMask', 'aporteMensalMask', 'tipoCDB'].forEach(id => { let el = document.getElementById(id); if(el) el.addEventListener('input', () => atualizarSimulador()); });
+      document.getElementById('tipoTempo')?.addEventListener('change', () => atualizarSimulador()); let tI = document.getElementById('tempo'), tS = document.getElementById('tempoSlider'); tI?.addEventListener('input', (e) => { tS.value = e.target.value; atualizarSimulador(); }); tS?.addEventListener('input', (e) => { tI.value = e.target.value; atualizarSimulador(); });
+      document.getElementById('compMesesSlider')?.addEventListener('input', (e) => { document.getElementById('compMeses').value = e.target.value; atualizarComparacao(); }); document.getElementById('compMeses')?.addEventListener('input', (e) => { document.getElementById('compMesesSlider').value = e.target.value; atualizarComparacao(); });
+      ['compValorMask', 'compAporteMask'].forEach(id => document.getElementById(id)?.addEventListener('input', () => atualizarComparacao())); document.getElementById('metaMesesSlider')?.addEventListener('input', (e) => { document.getElementById('metaMeses').value = e.target.value; }); document.getElementById('metaMeses')?.addEventListener('input', (e) => { document.getElementById('metaMesesSlider').value = e.target.value; });
+      IMask(document.getElementById('valorInicialMask'), { mask: 'R$ num', blocks: { num: { mask: Number, thousandsSeparator: '.', radix: ',' } }, lazy: false }); IMask(document.getElementById('aporteMensalMask'), { mask: 'R$ num', blocks: { num: { mask: Number, thousandsSeparator: '.', radix: ',' } }, lazy: false });
+      IMask(document.getElementById('compValorMask'), { mask: 'R$ num', blocks: { num: { mask: Number, thousandsSeparator: '.', radix: ',' } }, lazy: false }); IMask(document.getElementById('compAporteMask'), { mask: 'R$ num', blocks: { num: { mask: Number, thousandsSeparator: '.', radix: ',' } }, lazy: false });
+      IMask(document.getElementById('metaObjetivoMask'), { mask: 'R$ num', blocks: { num: { mask: Number, thousandsSeparator: '.', radix: ',' } }, lazy: false }); IMask(document.getElementById('metaInicialMask'), { mask: 'R$ num', blocks: { num: { mask: Number, thousandsSeparator: '.', radix: ',' } }, lazy: false });
+    }
+    function trocarAba(aba) { ['inicio','simulador','comparador','meta'].forEach(id => document.getElementById(id)?.classList.add('hidden')); document.getElementById(aba)?.classList.remove('hidden'); ['btn-inicio','btn-simulador','btn-comparador','btn-meta'].forEach(btn => { let b = document.getElementById(btn); if(b){ b.classList.remove('tab-active'); b.classList.add('text-gray-300'); } }); let ativo = document.getElementById(`btn-${aba}`); if(ativo){ ativo.classList.add('tab-active'); ativo.classList.remove('text-gray-300'); } if(aba === 'simulador') atualizarSimulador(); if(aba === 'comparador') atualizarComparacao(); }
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; document.getElementById('installBtn')?.classList.remove('hidden'); document.getElementById('installBanner')?.classList.remove('hidden'); });
+    window.addEventListener('DOMContentLoaded', () => { bindEvents(); trocarAba('inicio'); atualizarSimulador(); atualizarComparacao(); });
+  </script>
+</body>
+</html>
