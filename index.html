@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
   <meta name="theme-color" content="#059669">
-  <meta name="description" content="Simulador de CDB definitivo com cálculos precisos de IR regressivo e IOF. PWA pronto para instalar no celular!">
+  <meta name="description" content="Simulador de Certificado de Depósito Bancário com cálculos precisos de IR regressivo e IOF. PWA pronto para instalar no celular!">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="CDB Pro Ultra">
+  <meta name="apple-mobile-web-app-title" content="CDB Pro">
   <link rel="manifest" href="data:application/manifest+json,{
-    \"name\": \"CDB Pro Ultra\",
+    \"name\": \"Simulador CDB\",
     \"short_name\": \"CDB Pro\",
-    \"description\": \"Simulador de CDB com IR e IOF corrigidos\",
+    \"description\": \"Simulador de Certificado de Depósito Bancário com IR e IOF\",
     \"start_url\": \".\",
     \"display\": \"standalone\",
     \"theme_color\": \"#059669\",
@@ -59,6 +59,9 @@
     .card-info { background: rgba(255,255,255,0.05); border-radius: 1rem; padding: 1rem; border: 1px solid rgba(74,222,128,0.15); transition: all 0.3s; }
     body.light .card-info { background: #ffffff; border: 1px solid #e2e8f0; }
     .card-info:hover { transform: translateY(-3px); border-color: rgba(16,185,129,0.4); }
+    .stat-card { background: rgba(255,255,255,0.05); border-radius: 1rem; padding: 1rem; text-align: center; transition: all 0.3s; }
+    body.light .stat-card { background: #ffffff; border: 1px solid #e2e8f0; }
+    .stat-card:hover { transform: translateY(-3px); }
     ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-track { background: #1f2937; border-radius: 10px; }
     ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 10px; }
@@ -82,7 +85,7 @@
         <div class="flex items-center justify-between flex-wrap gap-2">
           <div class="flex items-center gap-2">
             <div class="bg-gradient-to-br from-emerald-400 to-green-600 p-1.5 md:p-2 rounded-xl shadow-lg animate-float"><i class="fas fa-chart-line text-white text-base md:text-xl"></i></div>
-            <div><h1 class="font-black text-lg md:text-2xl bg-gradient-to-r from-emerald-300 via-green-400 to-emerald-300 bg-clip-text text-transparent">CDB<span class="text-white"> PRO ULTRA</span></h1><p class="text-[8px] md:text-[10px] text-gray-400">simulador definitivo • informações corrigidas</p></div>
+            <div><h1 class="font-black text-lg md:text-2xl bg-gradient-to-r from-emerald-300 via-green-400 to-emerald-300 bg-clip-text text-transparent">Certificado de<span class="text-white"> Depósito Bancário</span></h1><p class="text-[8px] md:text-[10px] text-gray-400">simulador oficial • IR e IOF corrigidos</p></div>
           </div>
           <div class="flex gap-1 items-center">
             <button onclick="toggleTheme()" class="bg-gray-700/50 p-1.5 md:p-2 rounded-full text-xs hover:bg-gray-600 transition"><i id="themeIcon" class="fas fa-sun text-sm md:text-base"></i></button>
@@ -102,6 +105,7 @@
       
       <!-- INÍCIO -->
       <div id="inicio" class="tab-content animate-fade-in-up">
+        <!-- Hero -->
         <div class="glass-premium rounded-2xl md:rounded-3xl p-5 md:p-8 shadow-2xl mb-6">
           <div class="flex flex-col lg:flex-row justify-between gap-6">
             <div class="flex-1">
@@ -109,7 +113,7 @@
                 <i class="fas fa-mobile-alt"></i> PWA • INSTALÁVEL NO CELULAR
               </div>
               <h2 class="text-2xl md:text-4xl lg:text-5xl font-black leading-tight mb-3">
-                Simulador de <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-green-300">CDB</span><br>preciso e offline
+                Simulador de <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-green-300">Certificado de Depósito Bancário</span><br>preciso e offline
               </h2>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4">
                 <div class="flex items-center gap-2 text-emerald-400 text-sm"><i class="fas fa-check-circle"></i> IR Regressivo corrigido (22,5% → 15%)</div>
@@ -129,13 +133,51 @@
             <div class="hidden lg:flex items-center justify-center">
               <div class="text-center">
                 <i class="fas fa-chart-line text-6xl text-emerald-500/40"></i>
-                <p class="text-xs text-gray-400 mt-2">simulação precisa</p>
+                <p class="text-xs text-gray-400 mt-2">Rentabilidade atrelada ao CDI</p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- TABELAS DE IMPOSTOS CORRETAS -->
+        <!-- O QUE É CDB -->
+        <div class="glass-premium rounded-2xl p-5 mb-6">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="bg-emerald-500/20 p-2 rounded-lg"><i class="fas fa-university text-emerald-400 text-xl"></i></div>
+            <h3 class="text-xl font-bold">O que é o Certificado de Depósito Bancário?</h3>
+          </div>
+          <p class="text-gray-300 leading-relaxed">O <span class="text-emerald-400 font-bold">Certificado de Depósito Bancário (CDB)</span> é um título de renda fixa emitido por bancos para captar recursos. Você empresta dinheiro ao banco e recebe uma rentabilidade combinada no vencimento. É garantido pelo Fundo Garantidor de Créditos (FGC) até R$ 250 mil por CPF e instituição.</p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
+            <div class="bg-emerald-900/30 p-2 rounded-lg text-center"><i class="fas fa-chart-line text-emerald-400"></i><p class="text-sm font-bold mt-1">Rentabilidade</p><p class="text-xs">100% do CDI (~1% a.m.)</p></div>
+            <div class="bg-emerald-900/30 p-2 rounded-lg text-center"><i class="fas fa-shield-alt text-emerald-400"></i><p class="text-sm font-bold mt-1">Garantia</p><p class="text-xs">FGC até R$ 250k</p></div>
+            <div class="bg-emerald-900/30 p-2 rounded-lg text-center"><i class="fas fa-clock text-emerald-400"></i><p class="text-sm font-bold mt-1">Liquidez</p><p class="text-xs">Diária ou no vencimento</p></div>
+          </div>
+        </div>
+
+        <!-- DADOS DE MERCADO -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+          <div class="stat-card">
+            <i class="fas fa-chart-line text-emerald-400 text-xl mb-1"></i>
+            <p class="text-2xl font-black text-emerald-400">R$ 2,5T</p>
+            <p class="text-[10px] text-gray-400">Mercado de CDB no Brasil</p>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-percent text-emerald-400 text-xl mb-1"></i>
+            <p class="text-2xl font-black text-emerald-400">100% CDI</p>
+            <p class="text-[10px] text-gray-400">Rentabilidade padrão</p>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-shield-alt text-emerald-400 text-xl mb-1"></i>
+            <p class="text-2xl font-black text-emerald-400">R$ 250k</p>
+            <p class="text-[10px] text-gray-400">Garantia do FGC por CPF</p>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-users text-emerald-400 text-xl mb-1"></i>
+            <p class="text-2xl font-black text-emerald-400">15%</p>
+            <p class="text-[10px] text-gray-400">dos brasileiros investem em CDB</p>
+          </div>
+        </div>
+
+        <!-- TABELAS DE IMPOSTOS -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
           <div class="card-info">
             <div class="flex items-center gap-2 mb-3">
@@ -164,6 +206,40 @@
           </div>
         </div>
 
+        <!-- COMPARATIVO -->
+        <div class="glass-premium rounded-2xl p-5 mb-6">
+          <h3 class="text-lg font-bold mb-3 flex items-center gap-2"><i class="fas fa-chart-simple text-emerald-400"></i> CDB vs Outros Investimentos (Rendimento líquido anual)</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+            <div class="p-2 bg-emerald-900/30 rounded-xl"><p class="text-xs text-gray-400">CDB 100% CDI</p><p class="text-xl font-bold text-emerald-400">~12,68%</p><p class="text-[10px]">com impostos (15%)</p></div>
+            <div class="p-2 bg-yellow-900/30 rounded-xl"><p class="text-xs text-gray-400">Poupança</p><p class="text-xl font-bold text-yellow-400">~6,17%</p><p class="text-[10px]">isento de IR</p></div>
+            <div class="p-2 bg-blue-900/30 rounded-xl"><p class="text-xs text-gray-400">Tesouro Selic</p><p class="text-xl font-bold text-blue-400">~11,85%</p><p class="text-[10px]">com impostos (15%)</p></div>
+            <div class="p-2 bg-purple-900/30 rounded-xl"><p class="text-xs text-gray-400">LCI/LCA</p><p class="text-xl font-bold text-purple-400">~11%</p><p class="text-[10px]">isento de IR</p></div>
+          </div>
+        </div>
+
+        <!-- DICAS -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+          <div class="card-info">
+            <div class="flex items-center gap-2 mb-2"><i class="fas fa-trophy text-emerald-400"></i><h4 class="font-bold">🎯 Estratégia vencedora</h4></div>
+            <p class="text-sm text-gray-300">Para maximizar seus ganhos em CDB, mantenha o investimento por <span class="text-emerald-400 font-bold">mais de 720 dias (2 anos)</span> para pagar apenas 15% de IR, e evite resgatar nos primeiros 30 dias para não pagar IOF.</p>
+          </div>
+          <div class="card-info">
+            <div class="flex items-center gap-2 mb-2"><i class="fas fa-calculator text-emerald-400"></i><h4 class="font-bold">📈 Simulação exemplo</h4></div>
+            <p class="text-sm text-gray-300">Investindo <span class="text-emerald-400">R$ 10.000</span> com aporte de <span class="text-emerald-400">R$ 500/mês</span> por 5 anos → <span class="text-emerald-400 font-bold">~R$ 71.000 líquido</span> (considerando IR de 15% e IOF zero).</p>
+          </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="glass-premium rounded-2xl p-5">
+          <div class="flex items-center gap-2 mb-3"><i class="fas fa-question-circle text-emerald-400 text-xl"></i><h3 class="text-lg font-bold">Perguntas frequentes sobre CDB</h3></div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+            <div class="border-l-2 border-emerald-500 pl-3"><p class="font-semibold">💰 O CDB é seguro?</p><p class="text-gray-400 text-xs">Sim! Conta com garantia do FGC (Fundo Garantidor de Créditos) até R$ 250 mil por CPF e instituição financeira.</p></div>
+            <div class="border-l-2 border-emerald-500 pl-3"><p class="font-semibold">⏰ Qual o prazo mínimo?</p><p class="text-gray-400 text-xs">Varia conforme o banco, mas muitos CDBs têm liquidez diária (resgate a qualquer momento) ou prazos de 3 meses a 5 anos.</p></div>
+            <div class="border-l-2 border-emerald-500 pl-3"><p class="font-semibold">📈 Por que o CDI é referência?</p><p class="text-gray-400 text-xs">O CDI reflete a taxa de juros entre bancos e acompanha a Selic. CDBs pagam um percentual do CDI (ex: 100%, 110%).</p></div>
+            <div class="border-l-2 border-emerald-500 pl-3"><p class="font-semibold">🏦 Como declarar no IR?</p><p class="text-gray-400 text-xs">O banco já retém o imposto na fonte. Você só precisa informar os rendimentos na ficha "Renda Variável" ou "Rendimentos Isentos".</p></div>
+          </div>
+        </div>
+
         <div id="installBanner" class="glass-premium rounded-xl p-3 flex items-center justify-between gap-2 mt-4 hidden">
           <div class="flex items-center gap-2"><i class="fas fa-download text-emerald-400 text-xl"></i><span class="text-sm">Instale o app na tela inicial</span></div>
           <button onclick="instalarPWA()" class="bg-emerald-600 px-4 py-1 rounded-lg text-sm font-bold">Instalar</button>
@@ -174,7 +250,7 @@
       <div id="simulador" class="tab-content hidden animate-fade-in-up">
         <div class="glass-premium rounded-2xl md:rounded-3xl p-4 md:p-8">
           <div class="flex flex-wrap justify-between items-center gap-2 border-b border-gray-700 pb-4 mb-5">
-            <div class="flex items-center gap-2"><div class="bg-gradient-to-br from-emerald-500 to-green-600 p-2 rounded-xl"><i class="fas fa-chart-line text-white text-base md:text-xl"></i></div><h2 class="text-lg md:text-2xl font-black">Simulador Profissional</h2></div>
+            <div class="flex items-center gap-2"><div class="bg-gradient-to-br from-emerald-500 to-green-600 p-2 rounded-xl"><i class="fas fa-chart-line text-white text-base md:text-xl"></i></div><h2 class="text-lg md:text-2xl font-black">Simulador CDB</h2></div>
             <div class="flex gap-1">
               <button onclick="carregarExemploIniciante()" class="bg-blue-600/70 px-2 md:px-3 py-1 rounded-lg text-[10px] md:text-xs font-bold"><i class="fas fa-seedling"></i> Iniciante</button>
               <button onclick="carregarExemploAposentadoria()" class="bg-purple-600/70 px-2 md:px-3 py-1 rounded-lg text-[10px] md:text-xs font-bold"><i class="fas fa-tree"></i> Aposentadoria</button>
@@ -186,7 +262,10 @@
             <div class="space-y-3">
               <div><label class="block font-semibold text-sm"><i class="fas fa-dollar-sign text-emerald-400"></i> Valor inicial</label><input type="text" id="valorInicialMask" class="input-ultra" placeholder="R$ 1.000"></div>
               <div><label class="block font-semibold text-sm"><i class="fas fa-calendar-plus text-emerald-400"></i> Aporte mensal</label><input type="text" id="aporteMensalMask" class="input-ultra" placeholder="R$ 200"></div>
-              <div><label class="block font-semibold text-sm"><i class="fas fa-building-columns"></i> Tipo de CDB</label><select id="tipoCDB" class="input-ultra"><option value="pos">📈 CDB Pós-fixado (100% CDI) - 1% a.m.</option><option value="pre">📊 CDB Prefixado (12% a.a.) - 0.95% a.m.</option><option value="ipca">🛡️ CDB IPCA+ (IPCA+5%) - 0.85% a.m.</option></select></div>
+              <div class="bg-emerald-900/30 p-3 rounded-lg text-center">
+                <p class="text-sm font-bold text-emerald-400"><i class="fas fa-chart-line"></i> CDB (100% CDI)</p>
+                <p class="text-xs text-gray-300">Rentabilidade: 1% ao mês (12,68% ao ano)</p>
+              </div>
               <div class="grid grid-cols-2 gap-3"><div><label class="text-sm">Unidade</label><select id="tipoTempo" class="input-ultra"><option value="meses">📆 Meses</option><option value="dias">⏳ Dias</option></select></div><div><label class="text-sm">Período</label><input type="range" id="tempoSlider" min="1" max="120" value="24" class="range-slider w-full"><input type="number" id="tempo" value="24" class="input-ultra w-full mt-1 text-center"></div></div>
             </div>
             <div class="space-y-2">
@@ -242,44 +321,51 @@
       </div>
     </div>
   </div>
-  <footer class="text-center text-gray-500 text-[9px] md:text-xs py-4 border-t border-gray-800/40 no-print"><i class="fas fa-chart-line"></i> CDB Pro Ultra • IR Regressivo (22,5%→15%) • IOF decrescente (96%→0% em 30 dias) • Dados corrigidos e verificados</footer>
+  <footer class="text-center text-gray-500 text-[9px] md:text-xs py-4 border-t border-gray-800/40 no-print"><i class="fas fa-chart-line"></i> Certificado de Depósito Bancário • IR Regressivo (22,5%→15%) • IOF decrescente (96%→0% em 30 dias) • Simulação precisa</footer>
 
   <script>
     let chartInstance = null, tabelaVisivel = false, deferredPrompt = null;
     function formatMoney(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
     function parseMoney(val) { let v = String(val).replace(/[^0-9,]/g, '').replace(',', '.'); return parseFloat(v) || 0; }
-    function getTaxaMensal(tipo) { if (tipo === 'pre') return 0.0095; if (tipo === 'ipca') return 0.0085; return 0.01; }
     function calcularIOF(dias, lucro) { if (dias >= 30 || lucro <= 0) return 0; const t=[0.96,0.93,0.90,0.86,0.83,0.80,0.76,0.73,0.70,0.66,0.63,0.60,0.56,0.53,0.50,0.46,0.43,0.40,0.36,0.33,0.30,0.26,0.23,0.20,0.16,0.13,0.10,0.06,0.03,0]; let idx=dias-1; return idx>=t.length?0:lucro*t[idx]; }
-    function calcularCDBCompleto(valInic, aporte, tempo, tipo, tipoUnidade, retornaHistorico = false) {
-      let taxa = getTaxaMensal(tipo); let total = valInic, investido = valInic, dias = 0, historico = [];
-      if (tipoUnidade === "meses") { let saldo = valInic; for (let i = 0; i < tempo; i++) { if (i > 0) saldo += aporte; saldo = saldo * (1 + taxa); if (retornaHistorico) historico.push({ mes: i+1, bruto: saldo, investido: valInic + (aporte * (i+1)) }); } total = saldo; investido = valInic + (aporte * tempo); dias = tempo * 30; }
-      else { let saldo = valInic; for (let i = 1; i <= tempo; i++) { saldo = saldo * (1 + taxa/30); if (retornaHistorico) historico.push({ mes: i, bruto: saldo, investido: valInic }); } total = saldo; investido = valInic; dias = tempo; }
-      let lucro = Math.max(0, total - investido); let aliquotaIR = dias <= 180 ? 0.225 : (dias <= 360 ? 0.2 : (dias <= 720 ? 0.175 : 0.15)); let valorIR = lucro * aliquotaIR; let iof = calcularIOF(dias, lucro); let liquido = total - valorIR - iof; let roi = ((liquido - investido) / investido) * 100; let dataResgate = new Date(); dataResgate.setMonth(dataResgate.getMonth() + (tipoUnidade === 'meses' ? tempo : Math.floor(tempo/30))); return { total, investido, lucro, valorIR, iof, liquido, dias, aliquotaIR, historico, taxa, roi, dataResgate: dataResgate.toLocaleDateString('pt-BR') };
+    function calcularCDB(valInic, aporte, tempo, tipoUnidade, retornaHistorico = false) {
+      let taxa = 0.01;
+      let total = valInic, investido = valInic, dias = 0, historico = [];
+      if (tipoUnidade === "meses") {
+        let saldo = valInic;
+        for (let i = 0; i < tempo; i++) { if (i > 0) saldo += aporte; saldo = saldo * (1 + taxa); if (retornaHistorico) historico.push({ mes: i+1, bruto: saldo, investido: valInic + (aporte * (i+1)) }); }
+        total = saldo; investido = valInic + (aporte * tempo); dias = tempo * 30;
+      } else {
+        let saldo = valInic;
+        for (let i = 1; i <= tempo; i++) { saldo = saldo * (1 + taxa/30); if (retornaHistorico) historico.push({ mes: i, bruto: saldo, investido: valInic }); }
+        total = saldo; investido = valInic; dias = tempo;
+      }
+      let lucro = Math.max(0, total - investido); let aliquotaIR = dias <= 180 ? 0.225 : (dias <= 360 ? 0.2 : (dias <= 720 ? 0.175 : 0.15)); let valorIR = lucro * aliquotaIR; let iof = calcularIOF(dias, lucro); let liquido = total - valorIR - iof; let roi = ((liquido - investido) / investido) * 100; let dataResgate = new Date(); dataResgate.setMonth(dataResgate.getMonth() + (tipoUnidade === 'meses' ? tempo : Math.floor(tempo/30))); return { total, investido, lucro, valorIR, iof, liquido, dias, aliquotaIR, historico, roi, dataResgate: dataResgate.toLocaleDateString('pt-BR') };
     }
     function atualizarSimulador() {
-      let valInic = parseMoney(document.getElementById('valorInicialMask').value), aporte = parseMoney(document.getElementById('aporteMensalMask').value), tempo = parseInt(document.getElementById('tempo').value), tipoUnidade = document.getElementById('tipoTempo').value, tipoCDB = document.getElementById('tipoCDB').value;
+      let valInic = parseMoney(document.getElementById('valorInicialMask').value), aporte = parseMoney(document.getElementById('aporteMensalMask').value), tempo = parseInt(document.getElementById('tempo').value), tipoUnidade = document.getElementById('tipoTempo').value;
       if (isNaN(tempo) || tempo <= 0) tempo = 1;
-      let res = calcularCDBCompleto(valInic, aporte, tempo, tipoCDB, tipoUnidade, true);
+      let res = calcularCDB(valInic, aporte, tempo, tipoUnidade, true);
       document.getElementById('resumoLiquido').innerHTML = formatMoney(res.liquido); document.getElementById('resumoBruto').innerHTML = formatMoney(res.total); document.getElementById('resumoLucro').innerHTML = formatMoney(res.liquido - res.investido); document.getElementById('roiPercentual').innerHTML = `${res.roi.toFixed(2)}%`; document.getElementById('dataResgate').innerHTML = res.dataResgate;
       let faixaIR = res.dias <= 180 ? "22,5%" : (res.dias <= 360 ? "20%" : (res.dias <= 720 ? "17,5%" : "15%")); document.getElementById('taxaInfo').innerHTML = `IR: ${faixaIR} | IOF: ${res.dias>=30?'isento':res.dias+' dias'}`;
       let labels = [], dadosBrutos = [], dadosLiquidos = [];
       for (let i = 0; i < Math.min(res.historico.length, 60); i++) { let h = res.historico[i]; let lucroH = h.bruto - h.investido; let irH = lucroH * res.aliquotaIR; let iofH = calcularIOF(Math.min(res.dias, (tipoUnidade === 'meses' ? (i+1)*30 : i+1)), lucroH); labels.push(tipoUnidade === 'meses' ? `${h.mes}m` : `${h.mes}d`); dadosBrutos.push(h.bruto); dadosLiquidos.push(h.bruto - irH - iofH); }
       if (chartInstance) chartInstance.destroy(); const ctx = document.getElementById('evolutionChart').getContext('2d');
       chartInstance = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ label: 'Bruto', data: dadosBrutos, borderColor: '#f59e0b', tension: 0.3 }, { label: 'Líquido', data: dadosLiquidos, borderColor: '#10b981', borderWidth: 3, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: document.body.classList.contains('light') ? '#0f172a' : '#ccc', font: { size: 10 } } } } } });
-      let html = '<table><thead><tr><th>Mês</th><th>Bruto</th><th>Investido</th><th>Rendimento</th><th>IR</th><th>IOF</th><th>Líquido</th></tr></thead><tbody>';
+      let html = '<table class="w-full text-[10px]"><thead><tr><th>Mês</th><th>Bruto</th><th>Investido</th><th>Rendimento</th><th>IR</th><th>IOF</th><th>Líquido</th></tr></thead><tbody>';
       for (let i = 0; i < Math.min(res.historico.length, 24); i++) { let h = res.historico[i]; let lucroH = h.bruto - h.investido; let irH = lucroH * res.aliquotaIR; let iofH = calcularIOF(Math.min(res.dias, (tipoUnidade === 'meses' ? (i+1)*30 : i+1)), lucroH); html += `<tr><td class="p-2">${tipoUnidade === 'meses' ? `${h.mes}º mês` : `${h.mes}º dia`}</td><td class="p-2">${formatMoney(h.bruto)}</td><td class="p-2">${formatMoney(h.investido)}</td><td class="p-2">${formatMoney(lucroH)}</td><td class="p-2">${formatMoney(irH)}</td><td class="p-2">${formatMoney(iofH)}</td><td class="p-2 text-green-300">${formatMoney(h.bruto - irH - iofH)}</td></tr>`; }
       html += '</tbody></table>'; document.getElementById('tabelaEvolucao').innerHTML = html;
     }
     function toggleTabela() { tabelaVisivel = !tabelaVisivel; document.getElementById('tabelaEvolucao').classList.toggle('hidden', !tabelaVisivel); document.getElementById('tabelaIcon').classList.toggle('fa-chevron-up', tabelaVisivel); }
     function carregarExemploIniciante() { trocarAba('simulador'); document.getElementById('valorInicialMask').value = 'R$ 1.000'; document.getElementById('aporteMensalMask').value = 'R$ 200'; document.getElementById('tempo').value = '24'; document.getElementById('tempoSlider').value = '24'; atualizarSimulador(); }
     function carregarExemploAposentadoria() { trocarAba('simulador'); document.getElementById('valorInicialMask').value = 'R$ 10.000'; document.getElementById('aporteMensalMask').value = 'R$ 500'; document.getElementById('tempo').value = '120'; document.getElementById('tempoSlider').value = '120'; atualizarSimulador(); }
-    async function gerarPDF() { const { jsPDF } = window.jspdf; let valInic = parseMoney(document.getElementById('valorInicialMask').value); let aporte = parseMoney(document.getElementById('aporteMensalMask').value); let tempo = document.getElementById('tempo').value; let liquido = document.getElementById('resumoLiquido').innerText; const doc = new jsPDF('p', 'mm', 'a4'); doc.setFontSize(16); doc.text('Relatório CDB Pro Ultra', 20, 20); doc.setFontSize(10); doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 20, 30); doc.text(`Valor inicial: ${formatMoney(valInic)}`, 20, 40); doc.text(`Aporte mensal: ${formatMoney(aporte)}`, 20, 47); doc.text(`Período: ${tempo} ${document.getElementById('tipoTempo').value}`, 20, 54); doc.text(`Valor líquido: ${liquido}`, 20, 61); doc.text(`*IR regressivo (22,5%→15%) e IOF decrescente (96%→0% em 30 dias)`, 20, 75); doc.save(`relatorio_cdb_${new Date().toISOString().slice(0,10)}.pdf`); }
-    function atualizarComparacao() { let val = parseMoney(document.getElementById('compValorMask').value); let aporte = parseMoney(document.getElementById('compAporteMask').value); let meses = parseInt(document.getElementById('compMeses').value); let cdb = calcularCDBCompleto(val, aporte, meses, 'pos', 'meses'); let poup = (() => { let s = val; for (let i = 0; i < meses; i++) { if (i > 0) s += aporte; s *= 1.005; } return s; })(); document.getElementById('compCdbValor').innerHTML = formatMoney(cdb.liquido); document.getElementById('compCdbLucro').innerHTML = `Lucro: ${formatMoney(cdb.liquido - cdb.investido)}`; document.getElementById('compPoupValor').innerHTML = formatMoney(poup); document.getElementById('compPoupLucro').innerHTML = `Lucro: ${formatMoney(poup - (val + (aporte * meses)))}`; let diff = cdb.liquido - poup; document.getElementById('comparacaoDiferenca').innerHTML = diff > 0 ? `💰 CDB rende ${formatMoney(diff)} a mais!` : `📉 Poupança rende ${formatMoney(-diff)} a mais`; }
-    function calcularMeta() { let obj = parseMoney(document.getElementById('metaObjetivoMask').value); let ini = parseMoney(document.getElementById('metaInicialMask').value); let meses = parseInt(document.getElementById('metaMeses').value); if (obj <= ini) { document.getElementById('metaAporteResultado').innerHTML = "R$ 0"; document.getElementById('metaDetalhe').innerHTML = "Meta já atingida!"; return; } let low = 0, high = obj, aporteNecessario = 0; for (let iter = 0; iter < 50; iter++) { let mid = (low + high) / 2; let res = calcularCDBCompleto(ini, mid, meses, 'pos', 'meses'); if (res.liquido >= obj) { aporteNecessario = mid; high = mid; } else { low = mid; } } document.getElementById('metaAporteResultado').innerHTML = formatMoney(aporteNecessario); let resFinal = calcularCDBCompleto(ini, aporteNecessario, meses, 'pos', 'meses'); document.getElementById('metaDetalhe').innerHTML = `Com aporte de ${formatMoney(aporteNecessario)}/mês, atinge ${formatMoney(resFinal.liquido)} em ${meses} meses.`; }
+    async function gerarPDF() { const { jsPDF } = window.jspdf; let valInic = parseMoney(document.getElementById('valorInicialMask').value); let aporte = parseMoney(document.getElementById('aporteMensalMask').value); let tempo = document.getElementById('tempo').value; let liquido = document.getElementById('resumoLiquido').innerText; const doc = new jsPDF('p', 'mm', 'a4'); doc.setFontSize(16); doc.text('Relatório CDB', 20, 20); doc.setFontSize(10); doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 20, 30); doc.text(`Valor inicial: ${formatMoney(valInic)}`, 20, 40); doc.text(`Aporte mensal: ${formatMoney(aporte)}`, 20, 47); doc.text(`Período: ${tempo} ${document.getElementById('tipoTempo').value}`, 20, 54); doc.text(`Valor líquido: ${liquido}`, 20, 61); doc.text(`*IR regressivo (22,5%→15%) e IOF decrescente (96%→0% em 30 dias)`, 20, 75); doc.save(`relatorio_cdb_${new Date().toISOString().slice(0,10)}.pdf`); }
+    function atualizarComparacao() { let val = parseMoney(document.getElementById('compValorMask').value); let aporte = parseMoney(document.getElementById('compAporteMask').value); let meses = parseInt(document.getElementById('compMeses').value); let cdb = calcularCDB(val, aporte, meses, 'meses'); let poup = (() => { let s = val; for (let i = 0; i < meses; i++) { if (i > 0) s += aporte; s *= 1.005; } return s; })(); document.getElementById('compCdbValor').innerHTML = formatMoney(cdb.liquido); document.getElementById('compCdbLucro').innerHTML = `Lucro: ${formatMoney(cdb.liquido - cdb.investido)}`; document.getElementById('compPoupValor').innerHTML = formatMoney(poup); document.getElementById('compPoupLucro').innerHTML = `Lucro: ${formatMoney(poup - (val + (aporte * meses)))}`; let diff = cdb.liquido - poup; document.getElementById('comparacaoDiferenca').innerHTML = diff > 0 ? `💰 CDB rende ${formatMoney(diff)} a mais!` : `📉 Poupança rende ${formatMoney(-diff)} a mais`; }
+    function calcularMeta() { let obj = parseMoney(document.getElementById('metaObjetivoMask').value); let ini = parseMoney(document.getElementById('metaInicialMask').value); let meses = parseInt(document.getElementById('metaMeses').value); if (obj <= ini) { document.getElementById('metaAporteResultado').innerHTML = "R$ 0"; document.getElementById('metaDetalhe').innerHTML = "Meta já atingida!"; return; } let low = 0, high = obj, aporteNecessario = 0; for (let iter = 0; iter < 50; iter++) { let mid = (low + high) / 2; let res = calcularCDB(ini, mid, meses, 'meses'); if (res.liquido >= obj) { aporteNecessario = mid; high = mid; } else { low = mid; } } document.getElementById('metaAporteResultado').innerHTML = formatMoney(aporteNecessario); let resFinal = calcularCDB(ini, aporteNecessario, meses, 'meses'); document.getElementById('metaDetalhe').innerHTML = `Com aporte de ${formatMoney(aporteNecessario)}/mês, atinge ${formatMoney(resFinal.liquido)} em ${meses} meses.`; }
     function toggleTheme() { document.body.classList.toggle('light'); document.body.classList.toggle('dark'); let icon = document.getElementById('themeIcon'); icon.classList.toggle('fa-sun'); icon.classList.toggle('fa-moon'); if (chartInstance) chartInstance.options.plugins.legend.labels.color = document.body.classList.contains('light') ? '#0f172a' : '#ccc'; if (chartInstance) chartInstance.update(); }
     function instalarPWA() { if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => { deferredPrompt = null; }); } }
     function bindEvents() {
-      ['valorInicialMask', 'aporteMensalMask', 'tipoCDB'].forEach(id => { let el = document.getElementById(id); if(el) el.addEventListener('input', () => atualizarSimulador()); });
+      ['valorInicialMask', 'aporteMensalMask'].forEach(id => { let el = document.getElementById(id); if(el) el.addEventListener('input', () => atualizarSimulador()); });
       document.getElementById('tipoTempo')?.addEventListener('change', () => atualizarSimulador()); let tI = document.getElementById('tempo'), tS = document.getElementById('tempoSlider'); tI?.addEventListener('input', (e) => { tS.value = e.target.value; atualizarSimulador(); }); tS?.addEventListener('input', (e) => { tI.value = e.target.value; atualizarSimulador(); });
       document.getElementById('compMesesSlider')?.addEventListener('input', (e) => { document.getElementById('compMeses').value = e.target.value; atualizarComparacao(); }); document.getElementById('compMeses')?.addEventListener('input', (e) => { document.getElementById('compMesesSlider').value = e.target.value; atualizarComparacao(); });
       ['compValorMask', 'compAporteMask'].forEach(id => document.getElementById(id)?.addEventListener('input', () => atualizarComparacao())); document.getElementById('metaMesesSlider')?.addEventListener('input', (e) => { document.getElementById('metaMeses').value = e.target.value; }); document.getElementById('metaMeses')?.addEventListener('input', (e) => { document.getElementById('metaMesesSlider').value = e.target.value; });
